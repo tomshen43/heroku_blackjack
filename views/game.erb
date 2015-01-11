@@ -1,0 +1,61 @@
+<div id='game'>
+  <% if @winner %>
+    <div class="alert alert-success"><%=@winner%></div>
+  <% elsif @loser %>
+    <div class="alert alert-error"><%=@loser%></div>
+  <% end %>
+<h1>Welcome to blackjack <%=session[:player_name] %></h1>
+
+<% if @play_again ==true %>
+  <p>
+    <strong>Play Again?</strong>
+    <a href='/bet' class='btn btn-success'>Yes</a>
+    <a href='/game_over' class='btn btn-success'>No</a>
+  </p>
+<% end %>
+
+<div class="well">
+  <h5> Dealer's Cards </h5>
+  <% session[:dealer_cards].each_with_index do |card, i| %>
+    <% if session[:turn]!= 'dealer' && i == 0%>
+      <img src='/images/cards/cover.jpg' class='card_image'>
+    <% else %>
+      <%= card_image(card) %>
+    <%end%>
+  <% end %>
+  <% if @dealer_hit == true %>
+    <p>
+      <h5>Dealer has <%=session[:dealer_total] %> and will hit!</h5>
+      <form id='dealer_hit' action='/game/dealer/hit' method='post' >
+          <input type='submit' class='btn btn-primary' value="see dealer's next card &rarr;">
+      </form> 
+    </p>
+  <% end %>
+</div>
+
+<br/>
+<div class="well">
+  <h5> Your Cards </h5>
+  <% session[:player_cards].each do |card| %>
+    <%= card_image(card) %>
+  <%end%>
+  <% if session[:turn] == 'dealer' %>
+    <h5>You stayed at <%=session[:player_total] %> </h5>
+  <% end %>
+</div>
+
+<p>
+  <% if session[:turn] == 'player' %>
+    <h4>You have <%=session[:player_total] %>, what would you like to do?</h4>
+    <% if @hit_or_stay_button %>
+      <form id="hit_form" action='/game/hit' method='post'>
+        <input type='submit' class='btn btn-success' value='Hit'>
+      </form>
+
+      <form id="stay_form" action='/game/stay' method='post'>
+        <input type='submit' class='btn btn-success' value='Stay'>
+      </form>
+    <% end %>
+  <% end %>
+</p>
+</div>
